@@ -1,0 +1,120 @@
+// Add and Retrieve multiple documents
+
+-> creat new java class
+public class Note{
+    private String title;
+    private String description;
+    private String documentId;
+    public Note(){
+        // needed 
+        // firebase needed no-arg constructor
+    }
+    public Note(String title, String description){
+        this.title = title;
+        this.description = description;   
+    }
+    // only in this note object
+    @Exclude
+    public String getDocumentId(){
+        return documentId;
+    }
+    public void setDocumentId(String documentId){
+        documentId = documentId;
+    }
+    public String getTitle(){
+        return title;
+    }
+    public String getDescription(){
+        return title;
+    }
+}
+
+
+private static final String KEY_TITLE = "title";
+private static final String KEY_DESCRIPTION = "description";
+
+private EditText mTitle;
+private EditText mDescription;
+private TextView mTextViewData
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+// instance of DocumentReference 
+private DocumentReference noteReference = myDb.collection("Notebook").document("My First Note");
+
+mTitle = findViewById(R.id.edt_title);
+mDescription = findViewById(R.id.edt_description);
+mTextViewData = findViewById(R.id.txt_data);
+
+String title = mTitle.getText().toString();
+String description = mDescription.getText().toString();
+
+
+// save note
+public void saveNote(title, description){
+    Note note = new Note(title, description);
+    notebookReference.add(note)
+        .addOnSuccessListener{
+
+        }
+        .addOnFailureListener{
+
+        }
+}
+
+
+// load note
+public void loadNote(){
+    notebookReference.get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots){
+                String data = "";
+                for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                    Note note = snapshot.toObject(Note.class);
+                    note.setDocumentId(snapshot.getId());
+                    String documentId = note.getDocumentId();
+                    String title = note.getTitle();
+                    String description = note.getDescription();
+                    data += "DocumentId: " + documentId + "\n" + "Title: " + title + "\n" + "Description " + description;
+                }
+                mTextViewData.setText(data);
+            }
+        });
+        .addOnFailureListener{
+
+        }
+}
+
+
+// load note in real time
+@Override
+protected void onStart(){
+    super.onStart();
+    notebookReference.addSnapshotListener(this, new EventListener<QuerySnapshot>(){
+        @Override
+        public void onEvent(QuerySnapshot queryDoumentSnapshots, FirebaseFirestoreexception e){
+            if(e != null){
+                return;
+            }
+            String data = "";
+            for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                Note note = snapshot.toObject(Note.class);
+                note.setDocumentId(snapshot.getId());
+                String documentId = note.getDocumentId();
+                String title = note.getTitle();
+                String description = note.getDescription();
+                data += "DocumentId: " + documentId + "\n" + "Title: " + title + "\n" + "Description " + description;
+            }
+            mTextViewData.setText(data);
+        }
+    });
+}
+
+// delete the particular note
+public void deleteNote(){
+    // also can attach the listener too.
+    notebookReference.document(documentId).update or .delete or do something
+}

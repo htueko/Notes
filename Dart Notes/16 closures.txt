@@ -1,0 +1,7 @@
+// closures
+// closure is a special function
+// likes kotlin
+// not available until java 8
+// mutate or modify the value of variables present in parent scope
+
+

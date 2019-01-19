@@ -1,0 +1,103 @@
+// Pagination
+// further learn at doc or google
+
+
+private EditText mTitle;
+private EditText mDescription;
+private EditText mPriority;
+private TextView mTextViewData
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+
+mTitle = findViewById(R.id.edt_title);
+mDescription = findViewById(R.id.edt_description);
+mPriority = findViewById(R.id.edt_priority);
+mTextViewData = findViewById(R.id.txt_data);
+
+int priority = Integer.parseInt(mPriority.getText().toString());
+String title = mTitle.getText().toString();
+String description = mDescription.getText().toString();
+
+// save notes
+public void saveNote(){
+    if(priority.lenght() == 0){
+        priority = 0;
+    }
+    Note note = new Note(title, description, priority);
+    notebookReference.add(note);
+}
+
+// load notes
+public void loadNote(){
+    notebookReference.orderBy("priority")
+        .startAt(3)
+        .get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots){
+                String data = "";
+                for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                    Note note = snapshot.toObject(Note.class);
+                    note.setDocumentId(snapshot.getId());
+                    String documentId = note.getDocumentId();
+                    String title = note.getTitle();
+                    String description = note.getDescription();
+                    int priority = note.getPriority();
+                    data += "DocumentId: " + documentId + "\n" + "Title: " + title + "\n" + "Description " + description + "\n" + "Priority: " + priority";
+                }
+                mTextViewData.setText(data);
+            }
+        });
+        .addOnFailureListener{
+
+        }
+} 
+
+// startAt() and startAfter() can used mulitple times
+notebookReference
+    .orderBy("priority")
+    .orderBy("title")
+    .startAt(3, "search title")
+    .get()
+// find the values title is "search title" and priority start from 3
+
+
+// retrieve the 3 values at a time from database 
+private DocumentSnapshot lastResult;
+
+public void loatdNote(){
+    Query query; // import com.google.firebase.firestore
+    if(lastResult == null){
+        query = notebookReference.orderBy("priority").limit(3);
+    }else{
+        query = notebookReference.orderBy("priority").startAfter(lastResult).limit(3);
+    }
+    query.get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots){
+                String data = "";
+                for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                    Note note = snapshot.toObject(Note.class);
+                    note.setDocumentId(snapshot.getId());
+                    String documentId = note.getDocumentId();
+                    String title = note.getTitle();
+                    String description = note.getDescription();
+                    int priority = note.getPriority();
+                    data += "DocumentId: " + documentId + "\n" + "Title: " + title + "\n" + "Description " + description + "\n" + "Priority: " + priority";
+                }
+                // check the documents is empty or not and stop if empty.
+                if(queryDocumentSnapshots.size() > 0){
+                    data += "----------\n\n";
+                    mTextViewData.append(data);
+                    lastResult = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+                }
+            }
+        });
+        .addOnFailureListener{
+
+        }
+}

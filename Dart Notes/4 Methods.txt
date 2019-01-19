@@ -1,0 +1,55 @@
+// methods or functions
+
+Optional Return Type, Function (method) name, parameters
+
+String userName(String firstName, String lastName){
+    return firstName + lastName;
+}
+
+// here String is Return Type
+// userName is Function or method name
+// String firstName and String lastName are parameters
+
+greet(){
+    print("Hello Name");
+}
+
+// here is just a silly functions
+// do nothing other than print out "Hello Name";
+
+
+
+// Optional parameters
+void printName(String nameOne, String nameTwo, [String nameThree]){
+    print("Name one is $nameOne");
+    print("Name two is $nameTwo")
+    print("Name three is $nameThree")
+}
+
+// here nameThree is optional
+
+
+
+// Optional Named parameters
+int findVolume(int length, {int width, int height}){
+    return length * width * height;
+}
+
+var result = findVolume(2, width: 4, height: 8);
+print(result);
+
+var anotherResult = findVolume(height: 8, 2, width: 4);
+print(anotherResult);
+
+
+
+// Optional default paramenters
+int findVolume(int length, int width, {int height = 8}){
+    return length * width * height;
+}
+
+var result = findVolume(2, 4, 8);
+print(result);
+
+var anotherResult = findVolume(2, 4);
+print(anotherResult);

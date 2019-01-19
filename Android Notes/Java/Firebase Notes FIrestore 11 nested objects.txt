@@ -1,0 +1,93 @@
+// Nested Objects
+
+
+public class Note{
+    private String documentId;
+    private String title;
+    private String description;
+    private int priority;
+    private Map<String, Boolean> tags;
+
+    // constructor
+    // getters
+    // setters
+
+}
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+
+private TextView mTextViewData = findViewById(R.id.txt_data);
+private EditText edtTextTags = findViewById(R.id.edt_tags_text);
+String tagInput = edtTextTags.getText().toString();
+String[] tagArray = tagInput.split("\\s*,\\s*");
+Map<String, Boolean> tags = new HashMap<>();
+for(String tag : tagArray){
+    tags.put(tag, true);
+}
+
+// save the note 
+private void saveNote(){
+    Note note = new Note(title, description, priority, tags);
+    notebookReference.add(note); 
+}
+
+// load the note
+private void loadNote(){
+    notebookReference.get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+            @Override
+            public void onSuccess(QuerySnapshot querySnatshots){
+                String data = "";
+                for(QueryDocuemntSnatshot documentSnapshot : querySnatshots){
+                    Note note = documentSnapshot.toObject(Note.class);
+                    note.setDocumentId(documentSnapshot.getId());
+                    String documentId = note.getDocumentId();
+                    data += "ID: " + documentId;
+                    for(String gas : note.getTags().keySet()){
+                        data += "\n-" + tag;
+                    }
+                    data += "\n\n""
+                }
+                mTextViewData.setText(data);
+            }
+        });
+}
+
+// query the note
+private void loadNote(){
+    notebookReference
+        .whereEqualTo("tags.tag1", true)
+        .get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+            @Override
+            public void onSuccess(QuerySnapshot querySnatshots){
+                String data = "";
+                for(QueryDocuemntSnatshot documentSnapshot : querySnatshots){
+                    Note note = documentSnapshot.toObject(Note.class);
+                    note.setDocumentId(documentSnapshot.getId());
+                    String documentId = note.getDocumentId();
+                    data += "ID: " + documentId;
+                    for(String gas : note.getTags()){
+                        data += "\n-" + tag;
+                    }
+                    data += "\n\n""
+                }
+                mTextViewData.setText(data);
+            }
+        });
+}
+
+// update the note (within tag object)
+private void updateNestedValue(){
+    notebookReference.document("M0iZ7hIwlJkowcXXr")
+            .update("tags.tag1", false);
+}
+
+// delete the tag (within tag object)
+private void updateNestedValue(){
+    notebookReference.document("M0iZ7hIwlJkowcXXr")
+            .update("tags.tag1", FieldValue.delete());
+}

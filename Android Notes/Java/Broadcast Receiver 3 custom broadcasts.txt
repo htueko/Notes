@@ -1,0 +1,45 @@
+// Custom Broadcast Receivers
+
+-> create a new java class and extends BroadcastReceiver
+-> then override onRecieve()
+import android.content.BroadcastReceiver;
+public class OurExampleBroadcastReceiver extends BroadcastReceiver{
+   
+    @Override
+    public void onRecieve(Context context, Intent intent){
+        // broadcast action name must be UNIQUE to avoid comfuse with other app
+        if("io.htueko.appName.EXAMPLE_ACTION".equals(intent.getAction())){
+            String receivedText = intent.getStringExtra("io.htueko.EXTRA_TEXT");
+            Toast.makeText(context, receivedText, Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+
+-> go to MainActivity
+-> create and init OurExampleBroadcastReceiver
+-> used appropiate lifecycle callBack
+-> create and init an instance of IntentFilter
+-> passed the action name as we declared at OurExampleBroadcastReceiver
+here is io.htueko.appName.EXAMPLE_ACTION
+-> register the receiver
+-> unregister the reciver at appropiate callback
+// code
+OurExampleBroadcastReceiver ourReceiver = new OurExampleBroadcastReceiver();
+onCreate(){
+    IntentFilter filter = new IntentFilter("io.htueko.appName.EXAMPLE_ACTION");
+    registerReceiver(ourReceiver, filter);
+}
+
+onDestroy(){
+    unregisterReceiver(ourReceiver);
+}
+
+
+// create a new android project
+-> create and init an Intent object and passed our name string ("io.htueko.appName.EXAMPLE_ACTION")
+-> putExtra with unique name (key, value) pair
+-> send broadcast
+// code
+Intent intent = new Intent("io.htueko.appName.EXAMPLE_ACTION");
+intent.putExtra("io.htueko.EXTRA_TEXT", "Received Broadcast");
+sendBroadcast(intent);

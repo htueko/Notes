@@ -1,0 +1,115 @@
+// import the material package
+import 'package:flutter/material.dart';
+
+// main method (here using fat arrow)
+// run the MyFlutterApp()
+main(List<String> args) => runApp(MyFlutterApp());
+
+// create a class named MyFlutterApp and extends StatelessWidget
+// StatelessWidget don't have state, thinks like a widget that don't change in android
+class MyFlutterApp extends StatelessWidget{
+    // code body
+}
+
+// flutter class return widget 
+// I create and init three member variables modifier is final
+// cos StatelessWidget don't change, so do variables should
+// or change the class to mixin (may be mixing class, I'm not so sure right now)
+class MyFlutterApp extends StatelessWidget{
+    final String myTitle = "Flutter Learning";
+    final String myAppBarTitle = "Flutter App Bar";
+    final String myBodyText = "Hello Flutter";
+}
+
+// here I return MaterialApp();
+return MaterialApp(
+    title: myTitle,
+    home: Scaffold(
+        appBar: AppBar(
+            title: Text(myAppBarTitle),
+        ),
+    ),
+);
+
+// here myTitle = "Flutter Learning" is the app name
+// home: Scaffold(), is the container (like layout in android)
+// appBar: AppBar(title: Text(myAppBarTitle),),
+// like TextView within the Toolbar in android
+
+body: Material(
+          color: Colors.lightGreen,
+          child: Text(
+            myBodyText,
+            textDirection: TextDirection.ltr,
+            style: TextStyle(color: Colors.white, fontSize: 40.0),
+          ),
+        ),
+
+// body: Material(), like FrameLayout with match_parent height and width
+// TODO -> have to find out more about Material() 
+// and then another TextView with textSize=40.0 (I don't know this unit, have to explore more too)
+// and textColor=Color.WHITE in android (TextStyle class is interesting)
+// unlike android, I think there is no start and end (For Left To Right or Right To Left) in Flutter yet.
+
+// That it
+// Summary facts
+// inflate the layout programatically 
+// 1 Layout, app_name="Your app name", 1 Toolbar(obvious), 1 FrameLayout
+// 2 TextView, 1 within Toolbar, 1 within FramLayout with a few setWhatSoEver properties.
+ 
+
+-------------------------------------------------------------------------------------------------------------
+
+// Tweaking
+
+// code separation KISS
+import 'package:flutter/material.dart';
+import 'package:flutter_first/ui/first_screen.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final String appbarTitle = "Flutter Week0, Day01";
+    return MaterialApp(
+      // disable the debug banner at top right corner
+      debugShowCheckedModeBanner: false,
+      title: "Flutter Demo",
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(appbarTitle),
+          backgroundColor: Colors.lightBlueAccent,
+        ),
+        body: FirstScreen(),
+      ),
+    );
+  }
+}
+
+
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+class FirstScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.lightBlueAccent,
+      child: Center(
+        child: Text(
+          generateLuckyNumber(),
+          textDirection: TextDirection.ltr,
+          style: TextStyle(color: Colors.white30, fontSize: 42.0),
+        ),
+      ),
+    );
+  }
+
+    
+  String generateLuckyNumber() {
+    var random = Random();
+    int luckyNumber = random.nextInt(10);
+    return "Your lucky number is $luckyNumber";
+  }
+}

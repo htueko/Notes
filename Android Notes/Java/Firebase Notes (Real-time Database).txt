@@ -1,0 +1,3 @@
+-> data is synced across all clients in real-time
+-> data is stored in JSON format
+-> 

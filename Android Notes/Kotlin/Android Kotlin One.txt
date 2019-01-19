@@ -1,0 +1,75 @@
+->check the permission
+-> here is to record audio, change according to your needed
+
+<uses-permission.android.name="android.permission.RECORD_AUDIO"/>
+
+private val TAG = "permission to record audio"
+private fun setupPermission(){
+    val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+    if (permission != PackageManager.PERMISSION_GRANTED){
+        Log.i(TAG, "Audio Record Permission Denied")
+    }
+}
+
+
+
+-> requesting permission at runtime
+
+<uses-permission.android.name="android.permission.RECORD_AUDIO"/>
+
+private val TAG = "permission to record audio"
+private val REQUEST_CODE = 1200
+
+private fun setupPermission(){
+    val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+    if (permission != PackageManager.PERMISSION_GRANTED){
+        Log.i(TAG, "Audio Record Permission Denied")
+        makePermissionRequest()
+    }
+}
+
+private fun makePermissionRequest(){
+    ActivityCompat.requestSelfPermission(this, arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_CODE)
+}
+
+override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray){
+    when(requestCode){
+        REQUEST_CODE -> {
+            if  (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                Log.i(TAG, "Permission has been denied by user")
+            }else{
+                Log.i(TAG, "Permission has been granted by user")
+            }
+        }
+    }
+}
+
+
+-> Providing a Rationale for the Permission Request
+
+private fun setupPermissions() {
+    val permission = ContextCompat.checkSelfPermission(this,
+            Manifest.permission.RECORD_AUDIO)
+ 
+    if (permission != PackageManager.PERMISSION_GRANTED) {
+        Log.i(TAG, "Permission to record denied")
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.RECORD_AUDIO)) {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Permission to access the microphone is required 
+for this app to record audio.")
+                    .setTitle("Permission required")
+ 
+            builder.setPositiveButton("OK"
+            ) { dialog, id ->
+                Log.i(TAG, "Clicked")
+                makeRequest()
+            }
+ 
+            val dialog = builder.create()
+            dialog.show()
+        } else {
+            makeRequest()
+        }
+    }
+}

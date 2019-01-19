@@ -1,0 +1,47 @@
+-> to get the authentication use
+FirebaseAuth mAuth = FirebaseAuth.getInstance();
+val mAuth = FirebaseAuth.getInstance();
+
+
+-> to get the user, use
+mAuth.getCurrentUser()
+
+
+-> to create user, use
+mAuth.createUserWithEmailAndPassword(email, password);
+mAuth.createUserWithEmailAndPassword(email, password)
+
+
+-> to sign in, use
+mAuth.signInWithEmailAndPassword(email, password);
+mAuth.signInWithEmailAndPassword(email, password)
+
+
+-> to know successful or not, attach .addOnCompleteListener()
+mAuth.signInWithEmailAndPassword(email, password)
+    .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>(){
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task){
+            if(task.isSuccessful){
+                // successful, do your business logic here
+            }else{
+                // not successful, do your business logic here
+            }
+        }
+});
+
+mAuth.signInWithEmailAndPassword(email, password)
+    .createUserWithEmailAndPassword(email, password)
+        .addOnCompleteListener {
+            if (it.isSuccessful){
+                // successful, do your business logic here
+            }else{
+                // not successful, do your business logic here
+            }
+        }
+
+
+
+-> to log out, use
+mAuth.signOut();
+mAuth.signOut()

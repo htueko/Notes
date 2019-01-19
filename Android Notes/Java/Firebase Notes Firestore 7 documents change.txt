@@ -1,0 +1,54 @@
+// watch the change of the documents 
+
+
+private EditText mTitle;
+private EditText mDescription;
+private EditText mPriority;
+private TextView mTextViewData
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+
+mTitle = findViewById(R.id.edt_title);
+mDescription = findViewById(R.id.edt_description);
+mPriority = findViewById(R.id.edt_priority);
+mTextViewData = findViewById(R.id.txt_data);
+
+int priority = Integer.parseInt(mPriority.getText().toString());
+String title = mTitle.getText().toString();
+String description = mDescription.getText().toString();
+
+
+// watch the documents change at real time and do something 
+@Override
+protected void onStart(){
+    super.onStart();
+    notebookReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>(){
+        @Override
+        public void onEvent(DocumentSnapshot documentSnapShot, FirebaseFirestoreException e){
+            if(e != null){
+                Log.d(e.errorMessage());
+                return;
+            }
+            for(DocumentChange dc : documentSnapShot.getDocumentChanges()){
+                DocumentSnapshot mDocumentSnapshot = dc.getDocument();
+                String id = mDocumentSnapshot.getId();
+                int oldIndex = dc.getOldIndex();
+                int newIndex = dc.getNewIndex();
+                switch(dc.getType()){
+                    case ADDED:
+                        mTextViewData.append("\nAdded: " + id + "\nOld Index: " + oldIndex + "\nNew Index: " + newIndex);
+                        break;
+                    case MODIFIED:
+                        mTextViewData.append("\nModified: " + id + "\nOld Index: " + oldIndex + "\nNew Index: " + newIndex);
+                        break;
+                    case REMOVE:
+                        mTextViewData.append("\nRemove: " + id + "\nOld Index: " + oldIndex + "\nNew Index: " + newIndex);
+                        break;
+                }
+            }
+        }
+    });
+}

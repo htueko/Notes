@@ -1,0 +1,6 @@
+// Higher order function
+// same as kotlin
+// can accept function as a parameter
+// can return a function
+// or can do both
+

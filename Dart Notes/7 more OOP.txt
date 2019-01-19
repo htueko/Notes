@@ -1,0 +1,76 @@
+// Getter and Setter
+// Inheritance
+// Method Overriding
+// Inheritance with constructor
+// Abstract class and method
+// Interface
+// Static method and variable
+
+// Getter and Setter
+// dart have the default getter and Setter
+// after you defined member variables, you can used default getter and setter
+// dart don't have private, public or protected modifier
+// instead _ is private eg. int _age means private int age;
+
+class Cat{
+    // you already got default getter and setter 
+    String name;
+    int age;
+    String colour;
+}
+
+void main{
+    var ginger = Cat();
+    ginger.name = "Ginger"; // here using setter to set the name String
+    ginger.age = "4"; // here using setter to set the age int
+    ginger.colour = "Tabby"; // here using setter to set the colour String
+    print(ginger.name) // here using getter to get the ginger object name String
+    print(ginger.age) // here using getter to get the ginger object age int
+    print(ginger.colour) // here using getter to get the ginger object colour String
+}
+
+// custom getter and setter
+class Cat{
+    String name; 
+    
+    double percent;
+    // custom setter
+    void set birthRate(double number){
+        percent = (number / 200) * 100;
+    }
+
+    // custom getter
+    double get birthRate{
+        return percent;
+    }
+
+}
+
+void main{
+    var lizzy = Cat();
+    lizzy.name = "Lizzy";
+    print(lizzy.name);
+    lizzy.birthRate = 4.0;
+    print(lizzy.birthRate)
+}
+
+// private instance variables with custom getter and setter
+class Cat{
+    String name; 
+    
+    double _percent;
+    // private instance variable with custom setter
+    void set birthRate(double number) => _percent = (number / 200) * 100;
+    
+    // private instance variable with custom getter
+    double get birthRate => return _percent;
+
+}
+
+void main{
+    var lizzy = Cat();
+    lizzy.name = "Lizzy";
+    print(lizzy.name);
+    lizzy.birthRate = 4.0;
+    print(lizzy.birthRate)
+}

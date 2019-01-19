@@ -1,0 +1,58 @@
+// static variables
+// static functions
+// similar to Companion Object from kotlin
+
+// static
+// const
+
+
+main(List<String> args) {
+  var foreverOne = Forever();
+  // here foreverOne can't access nationaliyt or ethnic
+  print(Forever.nationality);
+  print(Forever.ethnic);
+  print("***");
+  Forever.nationality = "USA";
+  // static const variable can't assign again
+  // Forever.ethnic = "Indian";
+  print(Forever.nationality);
+  print(Forever.ethnic);
+  Forever.bloodColour();
+  Forever.greeting();
+  print("*****");
+  Forever.nationality = "Japanese";
+  Forever.greeting();
+}
+
+
+class Forever{
+  // static variable can assign another value again but don't take more memory when used at other place.
+  static var nationality = "Myanmar";
+  // static const variable can assign again.
+  static const String ethnic = "Burmese";
+
+  var name;
+  var age;
+
+  // static function
+  static void greeting(){
+    // static method can't access instance variable
+    // name = "Someone";
+    // static function can access static variables
+    if(nationality == "Myanmar"){
+      print("Min ga la par");
+    }else if(nationality == "Japanese"){
+      print("私は日保魏です");
+    }else{
+      print("Hello");
+    }
+    
+  }
+
+  // function can't declare as static const
+  static void bloodColour(){
+    print("Blood is Red");
+  }
+}
+
+

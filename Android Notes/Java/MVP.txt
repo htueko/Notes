@@ -1,0 +1,10 @@
+Model View Presenter aka MVP
+
+Model -> Data Model
+View -> Screen
+Presenter -> Business Logic
+
+Model: Data and objects to display
+View: How it's displayed
+Presenter: Formats the model for disply and handles events like user input
+

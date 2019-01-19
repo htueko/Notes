@@ -1,0 +1,72 @@
+// Loops
+
+// for loop
+for(var i = 0; i < 10; i++){
+    print("Hello Dart");
+}
+
+
+// while loop
+while(i < 10){
+    print("Hello Dart");
+    i++;
+}
+
+
+// do while loop
+var i = 0;
+do{
+    print("Hello Dart");
+    i++;
+}while(i < 10);
+
+
+// for each 
+List weekdays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+for(String day in weekdays){
+    print(day);
+}
+
+
+// break keyword
+for (int i = 0; i < 10; i++){
+    if(i == 6){
+        break;
+    }
+}
+
+// labels keyword
+// keyword is user defined, here I used aLoop, you can used foo or bar or what so ever but not reserved keywords
+List weekdays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+aLoop: for (int i = 0; i < 10; i++){
+    for (String day in weekdays){
+        print(day);
+        if(day == "Fri"){
+            break aLoop;
+        }
+    }
+}
+
+
+// continue keyword
+for (int i = 0; i < 10; i++){
+    for (int j = 0; j < 10; j++){
+        if(i == 3 && j == 2){
+            continue;
+        }
+        print("i is $i and j is $j);
+    }
+}
+
+
+// continue keyword
+// labels keyword
+// keyword is user defined, here I used outmost, you can used foo or bar or what so ever but not reserved keywords
+outmost: for (int i = 0; i < 10; i++){
+    for (int j = 0; j < 10; j++){
+        if(i == 3 && j == 2){
+            continue outmost;
+        }
+        print("i is $i and j is $j);
+    }
+}

@@ -1,0 +1,45 @@
+// dart have default noarg constructor
+// if you wanna used custom constructor you have to get rid of default constructor(if you have one)
+// tip class can't have custom and noarg constructor together
+// tip class can have custom and namedConstructor together (2 or more)
+
+// inheritance with constructors
+
+main(List<String> args) {
+  var cat = Cat("Lucky", 2, "Ginger", "Female");
+  cat.sex = "Male";
+  print(cat.name);
+  print(cat.age);
+  print(cat.colour);
+  print(cat.sex);
+}
+
+class Animal{
+  var name;
+  var age;
+  var colour;
+  // 1 default constructor 
+  // Animal(){
+  //   print("Animal constructor");
+  // }
+  Animal(var name, var age, var colour){
+    this.name = name;
+    this.age = age;
+    this.colour = colour;
+  }
+  // named constructor
+  Animla.customNamedConstructor(){
+      print("Animal class custom named constructor");
+  }
+}
+
+class Cat extends Animal{
+  var sex;
+  Cat(var name,var age,var colour, var sex) : super(name, age, colour){
+    this.sex = sex;
+    print("Cat constructor");
+  }
+  Cat.catNamedConstructor(var name,var age) : super.customNamedConstructor(){
+      print("cat custom named constructor");
+  }
+}

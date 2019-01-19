@@ -1,0 +1,115 @@
+
+-> multiple queries
+
+// here is the sample of simple query to search books
+
+public class Books{
+    private String title;
+    private String arthur;
+    private String description;
+    private int releasedYear;
+    private int bookId;
+
+    public Books(String title, String arthur, String description, int releasedYear, int bookId){
+        this.title = title;
+        this.arthur = arthur;
+        this.description = description;
+        this.releasedYear = releasedYear;
+        this.bookId = bookId;
+    }
+
+    @Exclude
+    public int getBookId(){
+        return bookId;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+
+    public String getArthur(){
+        return arthur;
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public int getReleasedYear(){
+        return releasedYear;
+    }
+
+    public void setTitle(String title){
+        title = title;
+    }
+
+    public void setArthur(String arthur){
+        arthur = arthur;
+    }
+
+    public void setDescription(String description){
+        description = description;
+    }
+
+    public void setReleasedYear(int releasedYear){
+        releasedYear = releasedYear;
+    }
+
+    public void setBookId(int bookId){
+        bookId = bookId;
+    }
+
+}
+
+
+private FirebaseFirestore mAuth = FirebaseFirestore.getInstance()
+private CollectionReference booksReference = mAuth.collection("Books")
+private EditText searchEditText = findViewById(R.id.edt_search);
+private TextView mResult = findViewById(R.id.txt_result);
+String mSearch = searchEditText.getText().toString();
+private void getBook(String search){
+    booksReference
+        .whereEqualTo("title", search)
+        .whereEqualTo("description", search)
+        .whereEqualTo("arthur", search)
+        .orderBy("releasedYear", Query.Direction.DESCENDING)
+        .get()
+        .addOnSuccessListener{
+            // return the found books
+        }
+        .addOnFailureListener{
+            // handle exception;
+        }
+}
+
+CAUTION Firestore don't have OR operator, only AND operator, also notEqualTo 
+
+// merge tasks to query
+// here is the sample to find books released between 2000 and 2010, getBook(2000, 2010);
+public void getBook(int firstYear, int secondYear){
+    Task taskOne = booksReference.whereLessThan("releasedYear", firstYear)
+                        .orderBy("releasedYear")
+                        .get();
+    Task taskTwo = booksReference.whereGreaterThan("releasedYear", secondYear)
+                        .orderBy("releasedYear")
+                        .get();
+    Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskOne, taskTwo);
+    allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>(){
+        @Override
+        public void onSuccess(List<QuerySnapshot> querySnapshots){
+            String data = "";
+                for (QuerySnapshot queryDocumentSnapshots : querySnapshots){
+                    for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                        Note note = snapshot.toObject(Note.class);
+                        note.setDocumentId(snapshot.getId());
+                        String documentId = note.getDocumentId();
+                        String title = note.getTitle();
+                        String description = note.getDescription();
+                        int priority = note.getPriority();
+                        data += "DocumentId: " + documentId + "\n" + "Title: " + title + "\n" + "Description " + description + "\n" + "Priority: " + priority";
+                    }
+                } 
+                mResult.setText(data);
+        }
+    });
+}

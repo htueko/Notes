@@ -1,0 +1,43 @@
+// abstract class
+// abstract method
+// have to used abstract keyword
+// normal class can create instance of the class
+// eg var cat = Cat();
+// abstract class can't create instance of the class
+// eg var cat = Cat(); will be error
+// normal method have body 
+// eg int plus(var numOne, var numTwo) => return numOne + numTwo;
+// abstract method don't have body
+// eg void draw();
+// abstract method have to initialized at child class that extends
+// otherwise abstract method is a contract that must be init
+
+// tip absract class can have both normal functions and abstract functions alltogether.
+// normal functions from abstract class don't needed to initialized at child class (optional)
+// tip abstract class can have local variable (instance variable) too.
+// abstract class is just like a normal class but have abstract method and abstract keyword before class keyword.
+
+// abstract class 
+
+main(List<String> args) {
+  var canvas = Canvas();
+  canvas.draw();
+  canvas.normalDraw();
+}
+
+abstract class Shape{
+  int x;
+  int y;
+  void draw();
+  void normalDraw(){
+    print("Start from $x to $y");
+  }
+}
+
+class Canvas extends Shape{
+  @override
+  void draw() {
+    print("Drawing the shape of the canvas");
+  }
+
+}

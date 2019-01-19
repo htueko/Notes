@@ -1,0 +1,32 @@
+// upload image to Firebase Storage
+
+implementation 'com.google.firebase:firebase-auth:16.1.0'
+implementation 'com.google.firebase:firebase-storage:16.0.5'
+
+
+// random UUID for image name
+val uuidImageName = UUID.randomUUID().toString() + ".jpg"
+// Firebase storage image collections
+val imagesCollections = "images"
+// reference of images collections on Firebase storage aka FirebaseStorage reference
+val imagesReference = FirebaseStorage.getInstance().getReference.child(imagesCollections).child(uuidImageName)
+
+
+
+// Firebase Database
+
+implementation 'com.google.firebase:firebase-auth:16.1.0'
+implementation 'com.google.firebase:firebase-database:16.0.0'
+
+// init the userEmail EditText
+userEmail = findViewById(R.id.edt_user_email)
+// user email
+val email = userEmail.text.toString()
+// starting point of the Firebase Database aka FirebaseDatabase reference
+val myDatabase = FirebaseDatabase.getInstance().getReference
+// Firebase Database users collections
+val usersDatabase = "users"
+// Firebase Database users emails collections
+val usersEmailsCollection = "emails"
+// add user to firebase database reference 
+myDatabase.child(usersDatabase).child(task.result.user.uid).child(usersEmailsCollection).setValue(email)

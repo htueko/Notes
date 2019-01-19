@@ -1,0 +1,62 @@
+// Batched Writes
+// all or nothing 
+
+
+private EditText mTitle;
+private EditText mDescription;
+private EditText mPriority;
+private TextView mTextViewData
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+
+mTitle = findViewById(R.id.edt_title);
+mDescription = findViewById(R.id.edt_description);
+mPriority = findViewById(R.id.edt_priority);
+mTextViewData = findViewById(R.id.txt_data);
+
+int priority = Integer.parseInt(mPriority.getText().toString());
+String title = mTitle.getText().toString();
+String description = mDescription.getText().toString();
+
+
+@Override 
+protected void onCreate(Bundle savedInstanceState){
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    executeBatchedWrite();
+}
+
+private void executeBatchedWrite(){
+    // a single batch object can handle 500, if you needed more you needed multiple batch object
+    WriteBatch batch = myDb.batch();
+    
+    // batch create
+    DocumentReference doc1 = notebookReference.document("New Note");
+    batch.set(doc1, new Note("New Note Title", "New Note Description", 1));
+    
+    // batch update the existing document
+    DocumentReference doc2 = notebookReference.document("Not existing document");
+    batch.update(doc2, "title", "Update note");
+   
+    // batch create without title 
+    DocumentReference doc4 = notebookReference.document();
+    batch.set(doc4, new Note("New doc4", "New doc4 descriptioin", 2));
+
+    // batch delete
+    // here I passed the id of the document that existed 
+    DocumentReference doc3 = notebookReference.document("SEEuvewUJxEzucieIzAAI");
+    batch.delete(doc3);
+
+    // commit the batch operation
+    batch.commit().addOnFailureListener(new OnFailureListener(){
+        @Override
+        public void onFailure(@NonNull Exception e){
+            mTextViewData.setText(e.toString());
+        }
+    });
+
+}

@@ -1,0 +1,47 @@
+// This is singleline comment
+/*
+This is multiline comment  
+*/
+
+// Data Type
+
+// Numbers: int
+int anInt = 30;
+var anotherInt = 30;
+
+// Numbers: double
+double aDouble = 32.1;
+var anotherDouble = 31.22;
+
+// Strings
+String aString = "Name";
+var anotherString = "another name";
+
+// Boolean
+bool aBool = true;
+var anotherBool = false;
+
+// String Literals
+String s1 = 'Single Quote';
+String s2 = "Double Quote";
+String s3 = "Here's mix";
+String s4 = 'It\'s complex'; 
+String s5 = "Here is a really long String."
+            " This is the second part of a really long String.";
+
+// String Interpolation
+String name = "Rob";
+int age = 30;
+print("$name is $age years old");
+print("The number of characters in really long string is ${s5.length}");
+
+// final keyword
+final city = "Taunggyi"; // here data type String is optional, also can't assign another value due to final keyword.
+const anotherCity = "Sun City"; // const is implicitly final.
+// difference between final and const is final initialized when accesed, const initialized during compile (ie eat memory)
+
+// class level
+class Animal{
+    final colour = "Black";
+    static const evolve = true; // not const evlove = true;
+}

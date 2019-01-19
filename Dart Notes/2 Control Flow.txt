@@ -1,0 +1,50 @@
+// if else
+var money = 300;
+if(money > 200){
+    print("here you are, take it");
+}else{
+    print("arrr, so expensive");
+}
+
+// if else if
+var age = 30;
+if(age >= 18){
+    print("under age");
+}else if(age >= 23){
+    print("some content may not be suitable for you");
+}else if(age >= 30){
+    print("You're welcome, but don't tried this at home");
+}else{
+    print("Do as you please, but don't forget that's your responsiblilty");
+}
+
+// conditional expressions
+// condition ? expression 1 : expression 2;
+// if condition is true, expression 1 will evaluate, otherwise expression 2 will evaluate
+int i = 1;
+int j = 2;
+i < j ? print("$i is smaller") : print("$j is smaller");
+
+int smaller = i < j ? i : j;
+print("@smaller is smaller");
+
+// expression 1 ?? expression 2
+// if expression 1 is not null, return it's value.  Otherwise return expression 2
+String name = "Marg";
+String printOut = name ?? "Guest";
+print(printOut);
+
+// switch case
+// only for int and String data type
+String grade = "A";
+switch(grade){
+    case "A":
+        print("Excellent");
+        break;
+    case "B":
+        print("Good");
+        break;
+    default:
+        print("Unknow error");
+}
+

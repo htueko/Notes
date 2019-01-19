@@ -1,0 +1,53 @@
+// Broadcast Receiver
+// Static Receivers
+// broadcast receiver component of the android app and can listen to events
+// eg. when the device boot up, when msg received, when wifi connect or not
+// IMPROTANT
+// API 24 (Nouget) and above will not going to work for this method 
+// API 24 and above, we needed to dynamically code for BroadcastReceiver
+// we can used JobScheduler to listen the broadcast events too.
+
+-> create a new java class and extends BroadcastReceiver
+import android.content.BroadcastReceiver;
+public class OurExampleBroadcastReceiver extends BroadcastReceiver
+
+-> then override onRecieve() method
+@Override
+public void onRecieve(Context context, Intent intent){
+    // this method will execute when our broadcast receiver is trigger
+}
+
+-> go to Manifest
+we have to regeister our receiver too
+within the 
+<application ...>
+    <receiver android:name=".OurExampleBroadcastReceiver">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+        </intent-filter>
+    </receiver>
+</application>
+
+// first action is when device is boot up completely
+// second action si when the device connection is change
+// this is called implicit broadcast receiver
+// this is static broadcast receiver, coz we can dynamically do that too.
+
+-> <uses-permission android:name="android.permission.RECIEVE_BOOT_COMPLETED"/>
+
+-> go back to OurExampleBroadcastReceiver class
+public void onRecieve(Context context, Intent intent){
+    if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())){
+        // HERE IS THE TRICK
+        // if(intent.getAction() == Intent.ACTION_BOOT_COMPLETED){
+        //   if intent.getAction() will return null, our app will crush
+        //   but if we started with Intent.ACTION_BOOT_COMPLETED,
+        //   we are not going to crush our app, coz ACTION_BOOT_COMPLETED will never return null
+        // }
+        Toast.makeText(context, "Boot Completed", Toast.LENGTH_SHORT).show();
+    }
+    if(ConnectivityManger.CONNECTIVITY_ACTION.equals(intent.getAction())){
+        Toast.makeText(context, "Connectivity changed", Toast.LENGTH_SHORT).show();
+    }
+}

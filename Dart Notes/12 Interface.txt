@@ -1,0 +1,41 @@
+// dart don't have interface likes java or kotlin
+// just implements the normal class instead of extends
+// dart can implements multiple interface (implements classes)
+// eg class Tank implements Car, Armour, Canon
+
+// way of interface in dart
+
+main(List<String> args) {
+  var bird = Bird();
+  bird.fly();
+  var chicken = Chicken();
+  chicken.fly();
+  var eagle = Eagle();
+  eagle.fly();
+}
+
+class Flyable{
+  void fly(){
+    print("Flying...");
+  }
+} 
+
+class Chicken implements Flyable{
+  @override
+  void fly() {
+    print("3 feets above the ground");
+  }
+
+}
+
+class Eagle implements Flyable{
+  @override
+  void fly() {
+    print("Flying likes an Eagle...");
+  }
+
+}
+
+class Bird extends Flyable{
+
+}

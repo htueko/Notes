@@ -1,0 +1,60 @@
+// Transactions
+// Transaction is a set of read and write operations on one or more documents
+// eg if one used pressed the like button to increased the total likes, at the same time 
+// another user performed the same operation, normal batched writes will increased only one likes,
+// but Transactions method will count both of them.
+// IMPORTANT
+
+private EditText mTitle;
+private EditText mDescription;
+private EditText mPriority;
+private TextView mTextViewData
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+
+mTitle = findViewById(R.id.edt_title);
+mDescription = findViewById(R.id.edt_description);
+mPriority = findViewById(R.id.edt_priority);
+mTextViewData = findViewById(R.id.txt_data);
+
+int priority = Integer.parseInt(mPriority.getText().toString());
+String title = mTitle.getText().toString();
+String description = mDescription.getText().toString();
+
+
+@Override 
+protected void onCreate(Bundle savedInstanceState){
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    executeTransaction();
+}
+
+private void executeTransaction(){
+    myDb.runTransaction(new Transaction.Function<Long>{
+        @Nullable
+        @Override
+        public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+            // you can't put read operation after write operation.
+            // start read then write
+
+            // reading operation
+            DocumentReference exampleNoteRef = notebookReference.document("Example Note");
+            DpcumentSnapshot exampleNoteSnap = transaction.get(exampleNoteRef);
+            long newPriority = exampleNoteSnap.getLong("priority") + 1;
+
+            // writing operation
+            transaction.update(exampleNoteRef, "priority", newPriority);
+
+            return newPriority;
+        }
+    }).addOnSuccessListener(new OnScuccessListener<Long>(){
+        @Override
+        public void onSuccess(Long result){
+            Toast.makeText(getApplicationContext(), newPriority.toString(), Toast.LENGTH_SHORT).show();
+        }
+    });
+}

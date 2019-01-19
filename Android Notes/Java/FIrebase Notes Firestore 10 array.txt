@@ -1,0 +1,92 @@
+// Array
+// Firestore don't accept normal java array
+
+public class Note{
+    private String documentId;
+    private String title;
+    private String description;
+    private int priority;
+    private List<String> tags;
+
+    // constructor
+    // getters
+    // setters
+
+}
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+
+private TextView mTextViewData = findViewById(R.id.txt_data);
+private EditText edtTextTags = findViewById(R.id.edt_tags_text);
+String tagInput = edtTextTags.getText().toString();
+String[] tagArray = tagInput.split("\\s*,\\s*");
+List<String> tags = Arrays.asList(tagArray);
+
+// save note
+private void addNote(){
+    Note note = new Note(title, description, priority, tags);
+    notebookReference.add(note);
+}
+
+// load note
+private void loadNote(){
+    notebookReference.get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+            @Override
+            public void onSuccess(QuerySnapshot querySnatshots){
+                String data = "";
+                for(QueryDocuemntSnatshot documentSnapshot : querySnatshots){
+                    Note note = documentSnapshot.toObject(Note.class);
+                    note.setDocumentId(documentSnapshot.getId());
+                    String documentId = note.getDocumentId();
+                    data += "ID: " + documentId;
+                    for(String gas : note.getTags()){
+                        data += "\n-" + tag;
+                    }
+                    data += "\n\n""
+                }
+                mTextViewData.setText(data);
+            }
+        });
+}
+
+// query note
+private void loadNote(){
+    notebookReference
+        .whereArrayContains("tags", "tag4") // tags is our array, tag4 is value 
+        .get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>(){
+            @Override
+            public void onSuccess(QuerySnapshot querySnatshots){
+                String data = "";
+                for(QueryDocuemntSnatshot documentSnapshot : querySnatshots){
+                    Note note = documentSnapshot.toObject(Note.class);
+                    note.setDocumentId(documentSnapshot.getId());
+                    String documentId = note.getDocumentId();
+                    data += "ID: " + documentId;
+                    for(String gas : note.getTags()){
+                        data += "\n-" + tag;
+                    }
+                    data += "\n\n""
+                }
+                mTextViewData.setText(data);
+            }
+        });
+}
+
+// update the array (if value not exist)
+private void updateArray(){
+    notebookReference.document("M0iZ7hIwlJkowcXXr")
+            // update if there is not tag with "new tag", here "new tag" is value.
+            // in real world, get the input from user and passed that input instead of hardcoded "new tag"
+            .update("tags", FieldValue.arrayUnion("new tag"));
+}
+
+// update the array (override if exist)
+private void updateArray(){
+    notebookReference.document("M0iZ7hIwlJkowcXXr")
+            .update("tags", FieldValue.arrayRemove("new tag"));
+}

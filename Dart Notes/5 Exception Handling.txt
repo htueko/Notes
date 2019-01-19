@@ -1,0 +1,63 @@
+// Exception Handling
+
+// on clause
+// used on clause if you know excatly about what exception will throw
+try{
+    int result = 20 ~/ 0;
+    print("The result is $result");
+} on IntegerDivisionByZeroException{
+    print("Can't divide by zero");
+}
+
+
+// catch clause
+// used catch clause if you don't know what exception will throw
+try{
+    int result = 20 ~/ 0;
+    print("The result is $result");
+}catch(e){
+    print("The exception is $e");
+}
+
+
+// catch clause using stack trace
+// used stack trace to know the events that occured before exception was thrown
+try{
+    int result = 20 ~/ 0;
+    print("The result is $result");
+}catch(e, s){
+    print("The exception is $e");
+    print("The stack trace is $s");
+}
+
+
+// finally clause
+// used finally
+try{
+    int result = 20 ~/ 0;
+    print("The result is $result");
+}catch(e){
+    print("The exception is $e");
+}finally{
+    print("Finally is finally executed, as always, no matter what's happened");
+}
+
+
+// custom exception
+class MyException implements Exception{
+    String errorMessage(){
+        return "My Exception is not your exception, but you have to handled";
+    }
+}
+
+void doSomething(String name){
+    if(name == ""){
+        throw new MyException();
+    }
+}
+
+try{
+    doSomething("");
+}catch(e){
+    print(e.errorMessage());
+}

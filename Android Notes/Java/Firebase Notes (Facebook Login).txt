@@ -1,0 +1,9 @@
+-> go to developers.facebook.com
+-> create app
+-> grub your App ID and App Secret
+-> go to Firebase console, Authentication, enable Facebook login
+-> add your App ID and App Secret
+-> and then copy OAuth redirect URL 
+-> go to developer.facebook.com, Settings and paste OAuth redirect URl
+-> that's all
+

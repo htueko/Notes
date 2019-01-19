@@ -1,0 +1,89 @@
+// class
+
+// define states or properties and behavior of human as Human class
+class Human{
+    String name; // instance or field variable, default is null
+    int age; // instance or field variable, default is null
+
+    void eat(){
+        // some code here
+        print("eating...");
+    }
+
+    void sleep(){
+        // some code here
+        print("sleeping...");
+    }
+
+}
+
+void main(){
+    // reference variable of class Human
+    var josh = Human();
+    print("${josh.name} and ${josh.age}");
+    josh.name = "josh";
+    josh.age = 30;
+    print("${josh.name} and ${josh.age}");
+    josh.eat();
+    josh.sleep();
+}
+
+
+// constructors
+// every class have their own default constructor
+// caution *** classes can't have both default and parameterized constructor altogether
+// but you can have multiple named constructor within one class
+class Cat{
+    // member variables or field variables or instance variables
+    String name;
+    int age;
+    String colour;
+
+    // default constructor (don't needed to create)
+    Cat(){
+        print("This is Cat constructor");
+    }
+
+    // parameterized constructor
+    Cat(String catName, int catAge, String catColour){
+        this.name = catName;
+        this.age = catAge;
+        this.colour = catColour;
+    }
+
+    // another way of defining parameterized constructor
+    Cat(this.name, this.age, this.colour);
+
+    // named constructor
+    Cat.myCatConstuctor(this.name, this.age, this.colour){
+        print("This is my cat custom constructor");
+    }
+
+}
+
+void main(){
+    // using default constructor
+    var ginger = Cat();
+    // using parameterized constructor
+    var lucky = Cat("Lucky", 2, "Tabby");
+    // using named constructor
+    var vega = Cat.myCatConstuctor("Vega", 3, "Brown");
+}
+
+
+class Sample{
+    // member variables or field variables or instance variables
+    int id;
+    String name;
+
+    void Purr(){
+        // local variable
+        String purrSound;
+    }
+
+}
+
+void main{
+    // here sample is called reference variable or object
+    var sample = Sample();
+}

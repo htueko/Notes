@@ -1,0 +1,29 @@
+// SubCollection
+
+
+
+private EditText mTitle;
+private EditText mDescription;
+private EditText mPriority;
+private TextView mTextViewData
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of CollectionReference
+private CollectionReference notebookReference = myDb.collection("Notebook");
+
+mTitle = findViewById(R.id.edt_title);
+mDescription = findViewById(R.id.edt_description);
+mPriority = findViewById(R.id.edt_priority);
+mTextViewData = findViewById(R.id.txt_data);
+
+int priority = Integer.parseInt(mPriority.getText().toString());
+String title = mTitle.getText().toString();
+String description = mDescription.getText().toString();
+
+private void addNote(){
+    Note note = new Note(title, description, priority, tags);
+    notebookReference.document("id_of_the_document_eg_ueiZiiLiqpicZZrsd")
+            .collection("Child Note")
+            .add(note);
+}

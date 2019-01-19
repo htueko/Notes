@@ -1,0 +1,160 @@
+-> Firestore is the alternative of Realtime Database
+
+-> Basic CRUD 
+-> here not using java object but HashMap
+
+implementation 'com.google.firebase:firebase-core:16.0.0'
+implementation 'com.google.firebase:firebase-firestore:16.0.0'
+
+private static final String KEY_TITLE = "title";
+private static final String KEY_DESCRIPTION = "description";
+
+private EditText mTitle;
+private EditText mDescription;
+private TextView mTextViewData
+
+// FirebaseFirestore reference
+private FireabaseFirestore myDb = FireabaseFirestore.getInstance();
+// instance of DocumentReference 
+private DocumentReference noteReference = myDb.collection("Notebook").document("My First Note");
+// another member variable
+private ListenerRegistration noteListener;
+
+mTitle = findViewById(R.id.edt_title);
+mDescription = findViewById(R.id.edt_description);
+mTextViewData = findViewById(R.id.txt_data);
+
+// save note to firestore (Notebook collection, My First Note document)
+public void saveNote(){
+    
+    String title = mTitle.getText().toString();
+    String description = mDescription.getText().toString();
+    
+    Map<String, Object> note = new HashMap<>();
+    note.put(KEY_TITLE, title);
+    note.put(KEY_DESCRIPTION, description);
+
+
+    // myDb.document("Notebook/My First Note").set(note);
+    noteReference.set(note)
+        .addOnSuccessListener{
+            // success
+        }
+        .addOnFailureListener{
+            // failure
+        }
+
+}
+
+// load note from firestore (Notebook collection, My First Note document)
+public void loadNote(){
+    noteReference.get()
+        .addOnSuccessListener{
+            // success
+            if(documentSnapShot.exists()){
+                String title = documentSnapShot.getString(KEY_TITLE);
+                String description = documentSnapShot.getString(KEY_DESCRIPTION);
+                mTextViewData.setText("Title: " + title + "\n" + "Description: " + description);
+                //Map<String, Object> note = documentSnapShot.getData();
+            }else{
+                // document does not exist
+            }
+        }
+        .addOnFailureListener{
+            // failure
+        }
+}
+
+// fetch the data in real time from firestore (Notebook collection, My First Note document)
+// avoid consuming too much unnessary data, we gonna put our code within onStart() method
+@Override
+protected void onStart(){
+    super.onStart();
+    noteListener = noteReference.addSnapshotListener(new EventListener<DocumentSnapshot>(){
+        @Override
+        public void onEvent(DocumentSnapshot documentSnapShot, FirebaseFirestoreException e){
+            if(e != null){
+                // handle error 
+                log.d(TAG, e.toString());
+                return; //import to leave this otherwise documentSnapShot will be null and app will crush
+            }
+            if(documentSnapShot.exists()){
+                String title = documentSnapShot.getString(KEY_TITLE);
+                String description = documentSnapShot.getString(KEY_DESCRIPTION);
+                mTextViewData.setText("Title: " + title + "\n" + "Description: " + description);
+                //Map<String, Object> note = documentSnapShot.getData();
+            }
+        }
+    });
+}
+
+// detach the listener at onStop()
+@Override
+protected void onStop(){
+    super.onStop();
+    noteListener.remove();
+}
+
+
+// another way of detach the listener at appropiate life cycle
+// just called the Context object to handle the callback when appropiate
+@Override
+protected void onStart(){
+    super.onStart();
+    noteReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>(){
+        @Override
+        public void onEvent(DocumentSnapshot documentSnapShot, FirebaseFirestoreException e){
+            if(e != null){
+                // handle error 
+                log.d(TAG, e.toString());
+                return; //import to leave this otherwise documentSnapShot will be null and app will crush
+            }
+            if(documentSnapShot.exists()){
+                String title = documentSnapShot.getString(KEY_TITLE);
+                String description = documentSnapShot.getString(KEY_DESCRIPTION);
+                mTextViewData.setText("Title: " + title + "\n" + "Description: " + description);
+                //Map<String, Object> note = documentSnapShot.getData();
+            }elst{
+                mTextViewData.setText("");
+            }
+        }
+    });
+}
+
+
+// Merge and Update from firestore (Notebook collection, My First Note document)
+// SetOptions.merge() used this method
+// here is description only, but we can used for title and other too.
+public void updateDescription(){
+    String description = mDescription.getText().toString();
+    Map<String, Object> note = new HashMap<>();
+    note.put(KEY_DESCRIPTION, description);
+    // this method will only update description here, title will be null
+    // noteReference.set(note);
+    // this method will override the description but leave the title,
+    // if object does not exist, this method will create a new one with only description without title.
+    // noteReference.set(note, SetOptions.merge());
+    // this method will update the description, but leave the title untouch,
+    // if there is no object do exist, nothing will happened, only update
+    noteReference.update(note);
+    // also we can passed key - value pair either
+    noteReference.update(KEY_DESCRIPTION, description);
+}
+
+
+// Delete Data from firestore (Notebook collection, My First Note document)
+
+// delete only description 
+public void deleteDescription(){
+    Map<String, Object> note = new HashMap<>();
+    note.put(KEY_DESCRIPTION, FieldValue.delete());
+    noteReference.update(note);
+    // another way, just one line, also can attach listener too.
+    noteReference.update(KEY_DESCRIPTION, FieldValue.delete());
+}
+
+// delete the whole note 
+public void deleteNote(){
+    // also can attach the listener too.
+    noteReference.delete();
+}

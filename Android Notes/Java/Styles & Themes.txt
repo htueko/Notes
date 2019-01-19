@@ -1,0 +1,112 @@
+// Style and Theme of Android
+
+-> Define and Use Style
+1 -> define style at res/values/styles.xml
+<style name="LargeRedFont">
+    <item name="android:textColor">#C80000</item>
+    <item name="android:textSize">40sp</item>
+</style>
+2 -> used that style 
+<TextView
+  android:id="@+id/tv_text"
+  style="@style/LargeRedFont"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:text="@string/hello_world" /> 
+
+---------------------------------------------------------------------
+
+-> Inheriting Style
+1 -> define style at res/values/styles.xml
+2 -> only add basic item then inherited that style to expand item
+3 -> use parent attribute
+<style name="LargeFont">
+    <item name="android:textSize">40sp</item>
+</style>
+
+<style name="LargeBlueFont" parent="@style/LargeFont">
+  <item name="android:textColor">#00007f</item>
+</style>
+
+4 -> if you define style as your self (not build in android styles)
+<style name="LargeFont">
+    <item name="android:textSize">40sp</item>
+</style>
+
+<style name="LargeFont.Red">
+    <item name="android:textColor">#C80000</item>
+</style>
+5 -> don't needed parent attributes but dot
+6 -> extend further with dot and dot and dot
+<style name="LargeFont.Red.Bold">
+    <item name="android:textStyle">bold</item>
+</style>
+
+<style name="LargeFont.Red.Big">
+    <item name="android:textSize">30sp</item>
+</style>
+7 -> if you wanna used build in android style, you must used parent attribute
+<style name="CustomButton" parent="@android:style/Widget.Button">
+  <item name="android:gravity">center_vertical|center_horizontal</item>
+  <item name="android:textColor">#FFFFFF</item>
+</style>
+
+---------------------------------------------------------------------
+
+Customizing Theme
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- ...generated stuff here -->
+     
+    <!-- This is the generated app theme -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- These are your custom properties -->
+        <item name="android:buttonStyle">@style/Widget.Button.Custom</item>
+        <item name="android:textViewStyle">@style/Widget.TextView.Custom</item>
+    </style>
+    
+    <!-- This is the custom button styles for this application -->
+    <style name="Widget.Button.Custom" parent="android:Widget.Button">
+      <item name="android:textColor">#0000FF</item>
+    </style>
+    
+    <!-- This is the custom textview styles for this application -->
+    <style name="Widget.TextView.Custom" parent="android:Widget.TextView">
+      <item name="android:textColor">#00FF00</item>
+    </style>
+</resources>
+
+---------------------------------------------------------------------
+
+Applying Theme
+
+1 -> to all the activities of the application
+<application android:theme="@style/CustomTheme">
+
+2 -> particular activity 
+<activity android:theme="@style/CustomTheme">
+
+---------------------------------------------------------------------
+
+Referencing style from themes
+1 -> used ?attr
+<EditText
+   android:textColor="?attr/colorPrimary"
+   android:layout_width="wrap_content"
+   android:layout_height="match_parent"
+   android:text="abc"/>
+
+2 -> using states
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorAccent" android:state_enabled="false"/>
+    <item android:color="?attr/colorPrimary"/>
+</selector>
+
+// getResources().getColor() is deprecated, ContextCompat will properly resolve
+ContextCompat.getColor(this, R.color.button_text_state_list);
+
+// resolve the default color 
+ColorStateList colorState = AppCompatResources.getColorStateList(this, R.color.button_text_state_list).getDefaultColor();
+
+// getResources().getDrawable() is deprecated
+Drawable drawable = AppCompatResources.getDrawable(this, R.drawable.my_drawable);
