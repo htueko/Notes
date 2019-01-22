@@ -1,0 +1,12 @@
+-> Downloadable Fonts & XML Fonts
+-> API 14
+-> fontFamily, choose more, choose font as downloadable font 
+-> if other app used that font, you're not gonna download again, font will be used from font cache
+
+-> download font(s)
+-> create package named font
+app/res/font/our_font.ttf (or) our_font_downloadable.xml
+-> fontFamily, choose our_font
+-> @font/our_font
+-> R.font.our_font
+
