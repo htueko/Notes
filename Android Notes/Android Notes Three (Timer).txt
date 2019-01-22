@@ -1,0 +1,22 @@
+Timer
+
+// first way
+Handler handler = new Handler();
+Runnable run = new Runnable(){
+    @Override
+    public void run(){
+        Log.i("Handler", "A second delayed");
+        handler.postDelayed(this, 1000);
+    }
+};
+handler.post(run);
+
+// another way (recommanded)
+new CountDownTimer(10000, 1000){
+    public void onTick(long milisecondsUntilDone){
+        Log.i("CountDownTimer Left", String.valueOf(milisecondsUntilDone / 1000));
+    }
+    public void onFinish(){
+        Log.i("CountDownTimer Done", "Done");
+    }
+}.start();

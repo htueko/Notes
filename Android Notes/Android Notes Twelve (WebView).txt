@@ -1,0 +1,19 @@
+-> used WebView to show the website on android
+
+WebView webView = findViewById(R.id.webView);
+// set javascript enable
+webView.getSettings().setJavaScriptEnabled(true);
+// open the website with our WebView, otherwise default browser will launch
+webView.setWebViewClient(new WebViewClient());
+// load the url 
+webView.loadUrl("http://www.google.com");
+// if you wanna used your html file
+// data = <html>
+//    <body>
+//        <h1>Our Web Site</h1>
+//        <p>Hey, this is our web site within WebView, Cool ha!?</p>
+//    </body>
+// </html>
+// mimeType = "text/html"
+// encoding = "UTF-8"
+webView.loadData(data:, mimeType:, encoding:);

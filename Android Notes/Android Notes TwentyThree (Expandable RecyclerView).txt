@@ -1,0 +1,8 @@
+// Expandable RecyclerView
+
+When we called setAdapter()
+1   -> constructor of the Adapter get called and init variables
+2   -> onCreateViewHolder() get called to create new view (if not create a new view, this method will not called)
+3   -> onBindViewHolder() get called to load the data
+4   -> getItemCount() get called to return total number of items 
+

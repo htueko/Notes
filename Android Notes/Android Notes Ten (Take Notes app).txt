@@ -1,0 +1,122 @@
+-> display the list of Text that user saved
+-> user can add, modify, and delete the Text
+
+
+-> FirstActivity
+
+static ArrayList<String> notes = ArrayList<>();
+static ArrayAdapter adapter;
+SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("package_name", Context.MODE_PRIVATE);
+ListView notesList = findViewById(R.id.listView);
+
+HashSet<String> set = sharedPreferences.getStringSet("notes", null);
+if(set == null){
+    notes.add("Your notes goes here");
+}else{
+    notes = new ArrayList<>(set);
+}
+
+adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notes);
+notesList.setAdapter(adapter);
+
+// when user clicked sent to SecondActivity to edit notes
+notesList.setOnItemClickListener{
+    Intent intent = new Intent(this, SecondActivity.class);
+    intent.putExtra("noteId", position);
+    startActivity(intent);
+}
+
+// when user long pressed
+notesList.setOnItemLongClickListener{
+    new AlertDialog.Builder(this)
+        .setIcon(android.R.drawable.ic_dialog_alert)
+        .setTitle("Are you sure?")
+        .setMessage("Do you want to delete this note?")
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+            notes.remove(i);
+            adapter.notifyDataSetChanged();
+            // convert the Array to HashSet
+            // HashSet don't hold the order of item
+            HashSet<String> set = new HashSet<>(FirstActivity.notesList);
+            sharedPreferences.edit()
+                .putStringSet("notes", set)
+                .apply();
+        });
+        .setNegativeButton("No", null)
+        .show();
+    return true;
+}
+
+// attach the menu to toolbar at FirstActivity
+@Override
+public boolean onCreateOptionsMenu(Menu menu){
+    getMenuInflater.inflate(R.menu.main_menu, menu);
+    return super.onCreateOptionsMenu(menu);
+}
+
+// to respond when user click the menu
+@Override
+public boolean onOptionsItemSelected(MenuItem item){
+    suepr.onOptionsItemSelected(item);
+    if(item.getItemId() == R.id.add_note){
+        Intent intent = new Intent(this, SecondActivity.class);
+        startActivity(intent);
+        return true;
+    }
+    return false;
+}
+
+
+-> Second Activity
+
+EditText editText = findViewById(R.id.edt_text);
+Intent intent = getIntent();
+int noteId = intent.getIntExtra("noteId", -1);
+
+if(noteId != -1){
+    editText.setText(FirstActivity.notes.get(noteId));
+}else{
+    FirstActivity.notesList.add("");
+    // to get the last position of the notesList
+    noteId = FirstActivity.notesList.size() -1;
+}
+
+// to watch the EditText object
+editText.addTextChangedListener(new TextWatcher(){
+    @Override
+    public void beforeTextChanged(@parameters){
+
+    }
+
+    @Override
+    public void onTextChanged(@parameters){
+
+        // add the text from this activity to array list from FirstActivity
+        FirstActivity.notesList.set(noteId, String.valueOf(charSequence));
+        // notify the ArrayAdapter that data is changed here;
+        FirstActivity.adapter.notifyDataSetChanged();
+
+        // save the notes with SharedPreferences object
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("package_name", Context.MODE_PRIVATE);
+        // convert the Array to HashSet
+        // HashSet don't hold the order of item
+        HashSet<String> set = new HashSet<>(FirstActivity.notesList);
+        sharedPreferences.edit()
+            .putStringSet("notes", set)
+            .apply();
+
+    }
+
+    @Override
+    public void afterTextChanged(@parameters){
+
+    }
+
+});
+
+
+-> main_menu.xml
+<item android:id="@+id/addNoteMainMenu"
+    android:title="Add Note"/>
+
+

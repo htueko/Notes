@@ -1,0 +1,48 @@
+// Navigation Drawer
+// DrawerLayout
+// Navigation View
+
+1   -> creat a poject
+2   -> create layout (host for navigation, and menu)
+        -> DrawerLayout
+        tools:openDrawer="start"
+            -> include
+            layout="@layout/app_bar_main"
+            -> NavigationView
+            app:headerLayout="@layout/nav_header_main"
+            app:menu="@menu/nav_menu_main"
+
+3   -> create another layout (host for toolbar)
+        -> CoordinatorLayout
+            -> AppBarLayout
+            android:fitsSystemWindows="true"
+            android:theme="@style/AppTheme.AppBarOverlay"
+                -> Toolbar
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+
+4   -> create another layout (for header in navigation drawer)
+        -> LinearLayout
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            -> ImageView
+            -> TextView
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+
+5   -> create another layout (for menu)
+6   -> initializate the components at MainActivity
+    -> declare the ActionBarDrawerToggle instance
+    -> init ActionBarDrawerToggle instance with paramenters
+    -> context, instance of DrawerLayout, instance of Toolbar, 2 string for open and close drawer
+    -> called getActivity() instead of this at context if we used Fragment
+    -> addDrawerListener to DrawerLayout instance and passed ActionBarDrawerToggle instance
+    -> eg drawer.addDrawerListener(toggle)
+    -> setHomeButtonEnabled(true) to 
+    -> setDisplayHomeUpEnabled(true)
+
+

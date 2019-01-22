@@ -1,0 +1,108 @@
+android:gravity="value" // content of view
+android:layout_gravity="value" // view itself, DOESN'T WORK FOR VIEWS IN RelativeLayout
+
+// set the image dynamically
+img_view.setImageResource(R.drawable.ourImage) 
+
+
+// animate the view
+ImageView imageView = findViewById(R.id.img_view);
+imageView.animate().aLotOfMethod().setDuration(miliseconds);
+
+
+// set the video path and play ( but can't control likes play or pause )
+VideoView videoView = findViewById(R.id.vdo_view);
+videoView.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.demoVideo);
+videoView.start();
+// needed MediaController object to control media
+MediaController control = new MediaController(this);
+control.setAnchorView(videoView);
+videoView.setMediaController(control);
+videoView.start();
+
+
+// set the audio, play and pause
+MediaPlayer mediaplayer = MediaPlayer.create(this, R.raw.audioFile);
+Button play = findViewById(R.id.btn_play);
+Button pause = findViewById(R.id.btn_pause);
+play.setOnClickListener{ mediaPlayer.start(); }
+pause.setOnClickLiistener{ mediaplayer.pause(); }
+
+
+// audio, 2 buttons, 1 seekbar ( version 2 )
+MediaPlayer mediaplayer = MediaPlayer.create(this, R.raw.audioFile);
+AudioManager audioplayer = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+// get the max volume (varies on devices, that's why)
+int maxVolume = audioplayer.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+// get the current volume of the device
+int currentVolume = audioplayer.getStreamVolume(AudioManager.STREAM_MUSIC);
+// get the max length of the audio (using MediaPlayer object)
+int maxLength = mediaplayer.getDuration();
+
+Button play = findViewById(R.id.btn_play);
+Button pause = findViewById(R.id.btn_pause);
+SeekBar volumeSeekBar = findViewById(R.id.volumeSeekbar);
+SeekBar scrubSeekBar = findViewById(R.id.scrubSeekBar);
+
+volumeSeekBar.setMax(maxVolume);
+volumeSeekBar.setProgress(currentVolume);
+scrubSeekBar.setMax(maxLength);
+
+play.setOnClickListener{ mediaPlayer.start(); }
+pause.setOnClickLiistener{ mediaplayer.pause(); }
+volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+    
+    @Override
+    public void onProgressChanged(SeekBar volumeSeekBar, int i, boolean b){
+        audioplayer.setStreamVolume(AudioManager.STREAM_MUSIC, i, 0);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar volumeSeekBar){
+        // when start touching the seek bar
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar volumeSeekBar){
+        // when user stop touching the seek bar
+    }
+
+});
+scrubSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+    
+    @Override
+    public void onProgressChanged(SeekBar scrubSeekBar, int i, boolean b){
+        mediaplayer.seekTo(i);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar scrubSeekBar){
+        // when start touching the seek bar
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar scrubSeekBar){
+        // when user stop touching the seek bar
+    }
+
+});
+
+// timer to update scrubSeekBar 
+new Timer().scheduleAtFixedRate(new TimerTask(){
+    @Override
+    public void run(){
+        scrubSeekBar.setProgress(mediaplayer.cgetCurrentPosition());
+    }
+}, 0, 1000); // smaller the miliseconds, the better the animation
+
+
+
+// translated app
+
+add android:tag="string" at every button (View) you needed
+
+public void pressedButton(View view){
+    Button pressedButton = (Button) view;
+    MediaPlayer player = MediaPlayer.create(this, getResources().getIdentifier(pressedButton.getTag().toString(), "raw", getPackageName()));
+    player.start();
+}
