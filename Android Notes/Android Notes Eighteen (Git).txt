@@ -1,0 +1,5 @@
+-> Git
+-> install Git
+-> VCS, Enable Version Control Integration, choose Git
+-> choose app from left panel, right click, Git, +Add
+-> VCS, Commit Change, commit message, Commit

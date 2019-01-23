@@ -1,0 +1,102 @@
+-> to display the dialog used AlertDialog class 
+
+new AlertDialog.Builder(this)
+    .setIcon(android.R.drawable.ic_dialog_alert)
+    .setTitle("This is alert dialog's title")
+    .setMessage("Do you want me to dance!! silly")
+    .setPositiveButton("Yes", new DialogInterface.onClickListener(){
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i){
+            Toast.makeText(getApplicationContext(), "Yay, you pressed YES", Toast.LENGTH_SHORT).show();
+        }
+    })
+    .setNegativeButton("No", null)
+    .show();
+
+
+-> preference example
+
+public class PreferencesActivity extends AppCompatActivity {
+
+    public static final String LANGUAGE = "preferences_example_language";
+    private SharedPreferences mSharedPreferences;
+    private TextView textView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_preferences);
+
+        mSharedPreferences = getSharedPreferences("io.htueko.journalofandroidinjava", MODE_PRIVATE);
+
+        textView = findViewById(R.id.txt_preferences_example);
+
+        String errorMessage = "Something Went Wrong :(";
+        String language = mSharedPreferences.getString(LANGUAGE, errorMessage);
+
+        if (language.equals(errorMessage)) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setTitle("Choose a language")
+                    .setMessage("Which language would you like to use?")
+                    .setPositiveButton("English", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // set the english language
+                            setLanguages("English");
+                        }
+                    })
+                    .setNegativeButton("Burmese", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // set the burmese language
+                            setLanguages("Burmese");
+                        }
+                    })
+                    .show();
+        } else {
+            textView.setText(language);
+        }
+    }
+
+    // set the languages
+    private void setLanguages(String language) {
+        mSharedPreferences.edit().putString(LANGUAGE, language).apply();
+        textView.setText(language);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.preferences_example_main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.preferences_example_main_menu_english:
+                setLanguages(item.getTitle().toString());
+                return true;
+            case R.id.perferences_example_main_menu_spanish:
+                setLanguages(item.getTitle().toString());
+                return true;
+            default:
+                return false;
+        }
+    }
+}
+
+-> preferences_example_main_menu.xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/preferences_example_main_menu_english"
+        android:title="English"/>
+
+    <item
+        android:id="@+id/perferences_example_main_menu_spanish"
+        android:title="Spanish"/>
+
+</menu>

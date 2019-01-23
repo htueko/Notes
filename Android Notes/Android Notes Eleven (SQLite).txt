@@ -1,0 +1,26 @@
+-> simple version
+
+// create or open (if exits) a database name is "Employees", private mode
+SQLiteDatabase myDatabase = this.openOrCreateDatabase("Employees", MODE_PRIVATE, null);
+// execute
+// VARCHAR aka String
+myDatabase.execSQL("CREATE TABLE IF NOT EXISTS employees (name VARCHAR, age INT(3))");
+// add employee to database
+myDatabase.execSQL("INSERT INTO employees (name, age) VALUES ('Sam', 28)");
+// add another employee
+myDatabase.execSQL("INSERT INTO employees (name, age) VALUES ('Rob', 22)");
+// Cursor object to query from table
+// a bunch of Cursor object to query from table (check the param)
+Cursor c = myDatabase.rawQuery("SELECT * FROM employees", null);
+// index of name and age
+int nameIndex = c.getColumnIndex("name");
+int ageIndex = c.getColumnIndex("age");
+// read from the start of the table
+c.moveToFirst();
+// looping 
+while(c != null){
+    Log.i("name", c.getString(nameIndex));
+    Log.i("age", c.getString(ageIndex));
+    // read next line (if exist)
+    c.moveToNext();
+}

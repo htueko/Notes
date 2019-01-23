@@ -1,0 +1,33 @@
+-> Picture to Picture
+-> API 26
+
+<activity android:name=".MainActivity"
+    android:resizableActivity="true"
+    android:supportsPictureInPicture="true"
+    android:configChanges="screenSize | smallestScreenSize | screenLayout | orientation>
+
+// that's it, just used this method :)
+enterPictureInPictureMode();
+
+TextView status = findViewById(R.id.txt_status);
+Button button = findViewById(R.id.btn_start);
+
+// in or out of picture in picture mode
+@Override
+public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig){
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+    if(isInPictureInPictureMode){
+        // going into picture in picture mode
+        button.setVisibility(View.INVISIBLE); // make the button invisible
+        getSupportActionBar().hide(); // hide the action bar
+        status.setText("We are in Picture in Picture Mode"); // change the text
+
+    }else{
+        // going out of picture in picture mode
+        button.setVisibility(View.VISIBLE); // make the button visible again
+        getSupportActionBar().hide(); // show the action bar
+        status.setText("Hello There"); // change the text
+    }
+}
+
+button.setOnClickListener{ enterPictureInPictureMode(); }

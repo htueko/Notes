@@ -1,0 +1,203 @@
+-> android UI runs on Main Thread
+-> used background thread to download 
+
+1 an URL object
+2 an String 
+3 an HttpURLConnection object (not HttpsURLConnection)
+4 assign the URL object 
+
+
+public class DownloadTask extends AsyncTask<String, Void, String>{
+    @Override
+    protected String doInBackground(String... urls){
+        String result = "";
+        int data;
+        URL url;
+        HttpURLConnection connection = null;
+        try{
+            url = new URL(urls[0]);
+            connection = (HttpURLConnection) ulr.openConnection();
+            InputStream inputStream = connection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            data = reader.read();
+
+            while(data != -1){
+                char current = (char) data;
+                result += current;
+                data = reader.read();
+            }
+            return result;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    } 
+
+}
+
+-> downloading Images
+
+public class DownloadImage extends AsyncTask<String, Void, Bitmap>{
+    @Override
+    protected Bitmap doInBackground(String... urls){
+        try{
+            Url url = new URL(urls[0]);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+            InputStream inputStream = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+public class MainActivity extends AppCompatActivity{
+    public void downloadImage(String url){
+        ImageView imageView;
+        DownloadImage downloadImage = new DownloadImage();
+        Bitmap bitmap;
+        try{
+            bitmap = downloadImage.exectue(url).get();
+            imageView.setImageBitmap(bitmap);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+}
+
+-> string manipulation
+->object.split("value you want to get rid of");
+->object.subString(1, 2); // index 1 to 2 (2 not included)
+->Pattern object 
+String city = "Taunggyi";
+Pattern p = Pattern.compile("Ta(.*?)yi");
+Matcher m = p.matcher(city);
+while(m.find()){
+    System.out.println(m.group(1)); // ungg
+}
+
+-> get the URL of the html
+String html = "sample html";
+String result = "";
+Pattern p = Pattern.compile("src=\"(.*?)\"");
+Matcher m = p.matcher(html);
+while(m.find()){
+    result = m;
+}
+
+-> JSON
+
+public class WeatherActivity extends AppCompatActivity {
+
+    TextView headingText;
+    TextView weatherInfoDisplayText;
+    EditText citySearch;
+    MaterialButton searchButton;
+    ImageView weatherIcon;
+    String openWeatherAPI = "http://samples.openweathermap.org/data/2.5/weather?q=";
+    String appId = "&appid=b6907d289e10d714a6e88b30761fae22";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_weather);
+
+        headingText = findViewById(R.id.txt_weather_heading);
+        weatherInfoDisplayText = findViewById(R.id.txt_weather_display);
+        citySearch = findViewById(R.id.edt_weather_city);
+        searchButton = findViewById(R.id.btn_weather_enter);
+        weatherIcon = findViewById(R.id.imgView_weather_icon);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getWeather();
+            }
+        });
+
+    }
+
+    public void getWeather() {
+        String cityName = citySearch.getText().toString();
+        String encodedCityName = null;
+        try {
+            encodedCityName = URLEncoder.encode(cityName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Log.i("EncodingException", e.getMessage());
+        }
+        DownloadWeather weatherTask = new DownloadWeather();
+        try {
+            weatherTask.execute(openWeatherAPI + encodedCityName + appId).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            Log.i("ExecutionException", e.getMessage());
+            Log.i("InterruptedException", e.getMessage());
+        }
+        // hide the soft keyboard when your press button
+        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(citySearch.getWindowToken(), 0);
+    }
+
+    public class DownloadWeather extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+            URL url;
+            HttpURLConnection urlConnection;
+            try {
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(inputStream);
+                int data = reader.read();
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("Exception", e.getMessage());
+                Toast.makeText(WeatherActivity.this, "Could not find weather :(", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.i("JSON data", result);
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String weatherInfo = jsonObject.getString("weather");
+                Log.i("JSON Weather Info", weatherInfo);
+                JSONArray jsonArray = new JSONArray(weatherInfo);
+                String message = "";
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonPart = jsonArray.getJSONObject(i);
+                    String main = jsonPart.getString("main");
+                    String description = jsonPart.getString("description");
+                    Log.i("main", main);
+                    Log.i("description", description);
+                    if (!main.equals("") && !description.equals("")) {
+                        message += main + " : " + description + "\r\n";
+                    }
+                }
+                if (!message.equals("")) {
+                    weatherInfoDisplayText.setText(message);
+                }else {
+                    Toast.makeText(WeatherActivity.this, "Could not find weather :(", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(WeatherActivity.this, "Could not find weather :(", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                Log.i("JSONException", e.getMessage());
+            }
+        }
+    }
+}

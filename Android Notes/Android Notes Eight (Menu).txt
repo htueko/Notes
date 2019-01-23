@@ -1,0 +1,33 @@
+-> menu 
+-> needed a menu xml
+-> put your desired menu within item tag
+<item
+    android:id="@+id/main_menu_settings"
+    android:title="settings"/>
+
+-> inflate the menu with MenuInflater object using inflate() at
+onCreateOptionsMenu(Menu menu) 
+@Override
+public boolean onCreateOptionsMenu(Menu menu){
+    getMenuInflater.inflate(R.menu.main_menu, menu);
+    return super.onCreateOptionsMenu(menu);
+}
+
+-> when user clicked or pressed the menu item
+@Override
+public boolean onOptionsItemSelected(MenuItem item){
+    super.onOptionsItmeSelected(item);
+    switch (item.getItemId()){
+        case R.id.settings:
+            Log.i(TAG, "pressed settings at main menu");
+            return true;
+        case R.id.help:
+            Log.i(TAG, "pressed help at main menu");
+            return true;
+        default:
+            return false;
+    }
+    
+}
+
+-> this way can used for the Navigation Menu at Navigation Drawer too.

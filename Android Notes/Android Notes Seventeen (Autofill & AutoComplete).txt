@@ -1,0 +1,16 @@
+-> Autofill & AutoComplete
+-> Autofill -> API 26
+-> AutoComplete -> API 22
+
+->
+String[] cities = {"Taunggyi", "Yangon", "Sun City", "Newyork", "Tokyo", "Toranto", "British Columbia"};
+AutoComleteTextView txtAutoComplete = findViewById(R.id.txt_autoComplete);
+ArrayAdapter<String> adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, cities);
+txtAutoComplete.setAdapter(adapter);
+// user just needed to type just one char to see match word
+// eg T or t will show Taunggyi and Tokyo
+txtAutoComplete.setThreshold(1);
+
+// needed API 26
+android:autofillHints="AUTOFILL_HINT_USERNAME" // there a lot of value google it.
+

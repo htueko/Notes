@@ -1,0 +1,369 @@
+-> Retrofit is a networking library
+-> add retrofit and gson converter dependencies 
+-> build a model class Post ( needed, constructor(without id) getter )
+-> butild a model class Comment ( needed getter )
+-> needed an interface 
+public interface MyRetrofitInterface{
+    // relative url (here is /posts) 
+    // www.example.com/posts (www.example.com is base url)
+    @GET("posts")
+    Call<List<Post>> getPosts();
+    // 
+    @GET("posts/{id}/comments")
+    Call<List<Comment>> getComments(@Path("id") int postId);
+    // primitive variable int isn't nullable, but Integer is nullable
+    // queries with HashMap
+    @GET("posts")
+    Call<List<Post>> getPosts(@QueryMap Map<String, String> parameters);
+    // just passing the url
+    @GET
+    Call<List<Comment>> getComments(@Url String url);
+    // post
+    @POST("posts")
+    Call<Post> createPost(@Body Post post);
+    // if api accept XML format or other used this
+    // eg userId=34&title=New%20Title&body=New%20Text
+    @FormUrlEncoded
+    @POST("posts")
+    Call<Post> createPost(
+        @Field("userId") int userId,
+        @Field("title") String title;
+        @Field("text") String text
+    );
+    // post with HashMap
+    @FormUrlEncoded
+    @POST("posts")
+    Call<Post> createPost(@FieldMap Map<String, String> fields);
+    // PUT replace whole, PATCH replace only passed value
+    // put 
+    @PUT("posts/{id}")
+    Call<Post> putPost(@Path("id") int id, @Body Post post);
+    // patch
+    @PATCH("posts/{id}")
+    Call<Post> patchPost(@Path("id") int id, @Body Post post);
+    // delete
+    @DELETE("posts/{id}")
+    Call<Void> deletePost(@Patch("id") int id);
+}
+
+// MyRetrofitInterface member variable
+MyRetrofitInterface myRetrofitInterface
+// TextView to display result (just testing)
+TextView mTextView = findViewById(R.id.txt_status);
+// if you want to accept null and passed to GsonConverterFactory.create(gson)
+// Gson gson = new GsonBuilder().serializeNulls().create();
+-> an Object of Retrofit
+// in real app you needed to passed "/" at the end of base url
+// eg https://example.com/v2/ -> otherwise Retrofit will throw EilgalStateException
+Retrofit retrofit = new Retrofit.Builder()
+        .baseUrl("https//jsonplaceholder.typicode.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
+-> create an object of interface
+myRetrofitInterface = retrofit.create(MyRetrofitInterface.class);
+getPosts();
+getComments();
+createPost();
+updatePost();
+deletePost();
+
+// method to get posts
+private void getPosts(){
+    -> create an Object of Call
+    Call<List<Post>> call = myRetrofitInterface.getPosts();
+    call.execute() // this method run on current thread
+    // this method run on background thread (prefered way)
+    call.enqueue(new Callback<List<Post>>(){
+        // when server response (that doesn't mean it's succeful)
+        @Override
+        public void onResponse(Call<List<Post>> call, Response<List<Post>> response){
+            // when response isn't succeful
+            if(!response.isSuccessful()){
+                // some code
+                mTextView.setText("Response Code: " + response.code());
+                return;
+            }else{
+                List<Post> posts = response.body();
+                for(Post post : posts){
+                    String context = "";
+                    content += "ID: " + post.getId() + "\n";
+                    content += "User ID: " + post.getUserId() + "\n";
+                    content += "Title: " + post.getTitle() + "\n";
+                    content += "Text: " + post.getText() + "\n\n";
+                    mTextView.append(content);      
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Post>> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// method to get comments
+private void getComments(){
+    Call<List<Comment>> call = myRetrofitInterface.getComments();
+    call.enqueue(new Callback<List<Comment>>(){
+        @Override
+        public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response){
+            if(!response.isSuccessful()){
+                mTextView.setText("Code: " + response.code());
+                return;
+            }else{
+                List<Comment> comments = response.body();
+                for (Comment comment : comments){
+                    String content = "";
+                    content += "ID: " + comment.getId() + "\n";
+                    content += "Post ID: " + comment.getPostId() + "\n";
+                    content += "Name: " + comment.getName() + "\n";
+                    content += "Email: " + comment.getEmail() + "\n";
+                    content += "Text: " + comment.getText() + "\n\n";
+                    mTextView.append(content);
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Comment>> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// method to mutlitple query
+private void getPosts(){
+    
+    Map<String, String> parameters = new HashMap<>():
+    parameters.put("userId", "1");
+    parameters.put("_sort", "id");
+    parameters.put("_order", "desc");
+
+    Call<List<Post>> call = myRetrofitInterface.getPosts(parameters);
+    call.enqueue(new Callback<List<Comment>>(){
+        @Override
+        public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response){
+            if(!response.isSuccessful()){
+                mTextView.setText("Code: " + response.code());
+                return;
+            }else{
+                
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Comment>> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// method to get the comments with url
+private void getComments(){
+    Call<List<Comment>> call = myRetrofitInterface.getComments("posts/2/comments");
+}
+
+// method to create post
+// passed your user input in real world app, here is just example
+private void createPost(){
+    // get the user input from EditText and passed in here
+    // 34 = userId, title = "New Title", text = "New Text"
+    Post post = new Post(34, "New Title", "New Text");
+    Call<Post> call = myRetrofitInterface.createPost(post);
+    call.enqueue(new Callback<Post>(){
+        @Override
+        public void onResponse(Call<Post> call, Response<List<Comment>> response){
+            if(!response.isSuccessful()){
+                mTextView.setText("Code: " + response.code());
+                return;
+            }else{
+                Post postResponse = response.body();
+                String context = "";
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postResponse.getId() + "\n";
+                content += "User ID: " + postResponse.getUserId() + "\n";
+                content += "Title: " + postResponse.getTitle() + "\n";
+                content += "Text: " + postResponse.getText() + "\n\n";
+                mTextView.append(content);
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Comment>> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// method to creat post @FormUrlEncoded (HTML, XML, etc.... not json)
+private vod createPost(){
+    // get the user input from EditText and passed in here
+    // 34 = userId, title = "New Title", text = "New Text"
+    Post post = new Post(34, "New Title", "New Text");
+    Call<Post> call = myRetrofitInterface.createPost(post);
+    call.enqueue(new Callback<Post>(){
+        @Override
+        public void onResponse(Call<Post> call, Response<List<Comment>> response){
+            if(!response.isSuccessful()){
+                mTextView.setText("Code: " + response.code());
+                return;
+            }else{
+                Post postResponse = response.body();
+                String context = "";
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postResponse.getId() + "\n";
+                content += "User ID: " + postResponse.getUserId() + "\n";
+                content += "Title: " + postResponse.getTitle() + "\n";
+                content += "Text: " + postResponse.getText() + "\n\n";
+                mTextView.append(content);
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Comment>> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// using HashMap
+// method to creat post @FormUrlEncoded (HTML, XML, etc.... not json)
+private vod createPost(){
+    Map<String, String> fields = new HashMap<>();
+    fields.put("userId", "34");
+    fields.put("title", "New Title");
+    fields.put("text", "New Text");
+    // get the user input from EditText and passed in here
+    // 34 = userId, title = "New Title", text = "New Text"
+    Post post = new Post(fields);
+    Call<Post> call = myRetrofitInterface.createPost(post);
+    call.enqueue(new Callback<Post>(){
+        @Override
+        public void onResponse(Call<Post> call, Response<List<Comment>> response){
+            if(!response.isSuccessful()){
+                mTextView.setText("Code: " + response.code());
+                return;
+            }else{
+                Post postResponse = response.body();
+                String context = "";
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postResponse.getId() + "\n";
+                content += "User ID: " + postResponse.getUserId() + "\n";
+                content += "Title: " + postResponse.getTitle() + "\n";
+                content += "Text: " + postResponse.getText() + "\n\n";
+                mTextView.append(content);
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Comment>> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// put (override modify)
+private void updatePost(){
+    Post post = new Post(34, null, "New Text");
+    Call<Post> call = myRetrofitInterface.putPost(8, post);
+    call.enqueue(new Callback<Post>(){
+        @Override
+        public void onResponse(Call<Post> call, Response<List<Comment>> response){
+            if(!response.isSuccessful()){
+                mTextView.setText("Code: " + response.code());
+                return;
+            }else{
+                Post postResponse = response.body();
+                String context = "";
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postResponse.getId() + "\n";
+                content += "User ID: " + postResponse.getUserId() + "\n";
+                content += "Title: " + postResponse.getTitle() + "\n";
+                content += "Text: " + postResponse.getText() + "\n\n";
+                mTextView.append(content);
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Post> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// patch (modify content(value))
+private void updatePost(){
+    Post post = new Post(34, null, "New Text");
+    Call<Post> call = myRetrofitInterface.patchPost(8, post);
+    call.enqueue(new Callback<Post>(){
+        @Override
+        public void onResponse(Call<Post> call, Response<List<Comment>> response){
+            if(!response.isSuccessful()){
+                mTextView.setText("Code: " + response.code());
+                return;
+            }else{
+                Post postResponse = response.body();
+                String context = "";
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postResponse.getId() + "\n";
+                content += "User ID: " + postResponse.getUserId() + "\n";
+                content += "Title: " + postResponse.getTitle() + "\n";
+                content += "Text: " + postResponse.getText() + "\n\n";
+                mTextView.append(content);
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Post> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+
+    });
+}
+
+// method to delete post
+private void deletePost(){
+    Call<Void> call = myRetrofitInterface.deletePost(8);
+    call.enqueue(new Callback<Void>(){
+        @Override
+        public void onResponse(Call<Void> call, Response<Void> response){
+            mTextView.setText("Code: " + response.code());
+        }
+        @Override
+        public void onFailure(Call<Void> call, Throwable t){
+            Log.i(TAG, t.getMessage());
+        }
+    });
+}
+
+
+// ****** NOTES *****
+// Retrofit used OkHttp for networking
+// Retrofit don't have logging, but Okhttp have
+// Build.Gradle (module)
+// implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+// at onCreate()
+HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+OkHttpClient okhttpclient = new OkHttpClient.builder()
+        .addInterceptor(loggingInterceptor)
+        .build();
+Retrofit retrofit = new Retrofit.Builder()
+        .baseUrl("https//jsonplaceholder.typicode.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(okhttpclient)
+        .build();

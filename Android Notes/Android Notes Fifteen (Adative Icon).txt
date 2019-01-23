@@ -1,0 +1,3 @@
+-> Adative Icon
+-> API 26 (Android Oero)
+-> change android:roundIcon="@mipmap/ic_launcher_round" to "@mipmap/ic_launcher"
