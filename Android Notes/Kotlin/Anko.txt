@@ -1,0 +1,116 @@
+Anko is a DSL (domain-specific language)
+
+// for anko support
+implementation 'org.jetbrains.anko:anko:0.10.1'
+
+// for support libraries (optional)
+implementation 'org.jetbrains.anko:anko-appcompat-v7:0.10.1'
+implementation 'org.jetbrains.anko:anko-design:0.10.1'
+implementation 'org.jetbrains.anko:anko-recyclerview-v7:0.10.1'
+implementation 'org.jetbrains.anko:anko-cardview-v7:0.10.1'
+
+
+-> created layout programmatically
+-> name of the function match the name of the widget, but start with lowercase
+eg. textView() for TextView 
+
+// Vertical LinearLayout with two TextView(both wrap_content) Anko way
+verticalLayout {
+    textView("One")
+    textView("Two")
+}
+
+// Vertical LinearLayout with two TextView(both wrap_content) XML way
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="One"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Two"/>
+</LinearLayout>
+
+
+// code (java, kotlin)
+-> Alert Dialog
+AlertDialog.Builder(this)
+    .setTitle("Our Title")
+    .setMessage("This is a message")
+    .setPositiveButton("Yes", null)// not attached the listener
+    .create()
+    .show()
+
+// Anko way
+alert("This is a message", "Our title"){
+    yesButton{}
+}.show()
+
+-> Toast
+toast("This is a short length toast")
+longToast("This is a long length toast")
+
+-> Intent
+startActivity<SecondActivity>("name" to "Sue", "age" to 28)
+
+-> Open browser
+browser("https:///www.gogle.com")
+
+-> Open default Email app
+email("sue@gmail.com", "Hello", "This is message body")
+
+-> SQLite Helper
+// create a database named test with mode private
+val myDB = openOrCreateDatabase("test.db", Context.MODE_PRIVATE, null)
+
+// create a table named person with name, age, net_worth and id
+myDB.createTable("PERSON", true,
+                "NAME" to TEXT,
+                "AGE" to INTEGER,
+                "NET_WORTH" to REAL,
+                "ID", to INTEGER + PRIMARY_KEY)
+
+// adding a row
+myDB.insert("PERSON",
+            "NAME" to "Sue",
+            "AGE" to 28,
+            "NET_WORTH" to 340000.0,
+            "ID" to 1101)
+
+// adding an another row
+myDB.insert("PERSON",
+            "NAME" to "Smith",
+            "AGE" to 30,
+            "NET_WORTH" to 210000.0,
+            "ID" to 1102)
+
+// query 
+myDB.select("PERSON", "NAME", "AGE")
+    .whereSimple("NET_WORTH > ?", "20000.0")
+    .exec{
+        // some more code here
+    }
+
+
+parseList(object: RowParser<String>{
+    override fun parseRow(columns: Array<Any?>): String {
+        // Concatenate the values of the first and second columns,
+        // which happen to be NAME and AGE
+        return "${columns[0]} (${columns[1]} years old)"
+    }
+}).forEach {
+    println(it) // print the concatenated values
+}
+
+myDB.select("PERSON", "NAME").exec {
+    parseList(StringParser).forEach {
+        println(it)
+    }
+}
+
